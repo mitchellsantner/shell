@@ -55,6 +55,21 @@ RUN curl https://rclone.org/install.sh | bash && \
 #drive downloader
 RUN curl -L https://github.com/jaskaranSM/drivedlgo/releases/download/1.5/drivedlgo_1.5_Linux_x86_64.gz -o drivedl.gz && \
     7z x drivedl.gz && mv drivedlgo /usr/bin/drivedl && chmod +x /usr/bin/drivedl && rm drivedl.gz
+#gdrive setupz
+RUN wget -P /tmp https://dl.google.com/go/go1.17.1.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf /tmp/go1.17.1.linux-amd64.tar.gzRUN rm /tmp/go1.17.1.linux-amd64.tar.gz
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+RUN go install github.com/oxosec/gdrive@latest
+RUN apt-get update && apt-get install libpcrecpp0v5 libcrypto++6 -y && \
+curl https://mega.nz/linux/MEGAsync/Debian_9.0/amd64/megacmd-Debian_9.0_amd64.deb --output megacmd.deb && \
+echo path-include /usr/share/doc/megacmd/* > /etc/dpkg/dpkg.cfg.d/docker && \
+apt install ./megacmd.deb
+
+#mega downloader
+RUN curl -L https://github.com/jaskaranSM/megasdkrest/releases/download/v0.1/megasdkrest -o /usr/local/bin/megasdkrest && \
+    chmod +x /usr/local/bin/megasdkrest
 
 #ngrok
 RUN aria2c https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && unzip ngrok-stable-linux-amd64.zip && mv ngrok /usr/bin/ && chmod +x /usr/bin/ngrok
