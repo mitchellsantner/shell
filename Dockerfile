@@ -72,11 +72,6 @@ RUN npm install
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-RUN apt-get update && apt-get install libpcrecpp0v5 libcrypto++6 -y && \
-curl https://mega.nz/linux/MEGAsync/Debian_9.0/amd64/megacmd-Debian_9.0_amd64.deb --output megacmd.deb && \
-echo path-include /usr/share/doc/megacmd/* > /etc/dpkg/dpkg.cfg.d/docker && \
-apt install ./megacmd.deb
-
 # setup workdir
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY nginx.conf /etc/nginx/nginx.conf
